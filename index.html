@@ -2,40 +2,111 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>SWF Player</title>
+  <title>Enhanced Flash Content Player</title>
   <style>
     body {
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
+      padding-top: 50px;
     }
-    #swfContainer {
-      margin-top: 20px;
+    h1 {
+      color: #333;
+    }
+    #controls {
+      margin: 20px 0;
+    }
+    #flashContainer {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input[type="text"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error {
+      color: #D8000C;
+      margin-top: 10px;
     }
   </style>
+  
+  <!-- Include the SWFObject library to enhance Flash embedding -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 </head>
 <body>
-  <h1>Enter the SWF file URL</h1>
-  <input type="text" id="swfUrl" placeholder="Enter SWF file URL">
-  <button onclick="playSWF()">Play</button>
-
-  <div id="swfContainer"></div>
-
-  <script>
+  <h1>Enter the SWF File URL</h1>
+  <div id="controls">
+    <input type="text" id="swfUrl" placeholder="Enter SWF file URL">
+    <button onclick="playSWF()">Play</button>
+  </div>
+  
+  <!-- Container for Flash content -->
+  <div id="flashContainer">
+    <div id="flashContent">
+      <!-- Fallback message -->
+      Flash content will appear here.
+    </div>
+  </div>
+  
+  <!-- Container for error messages -->
+  <div id="errorMessage" class="error"></div>
+  
+  <script type="text/javascript">
     function playSWF() {
       var url = document.getElementById("swfUrl").value.trim();
+      var errorDiv = document.getElementById("errorMessage");
+      errorDiv.innerHTML = "";
+      
       if (!url) {
-        alert("Please enter a SWF file URL.");
+        errorDiv.innerHTML = "Please enter a valid SWF file URL.";
         return;
       }
-      var container = document.getElementById("swfContainer");
-      container.innerHTML = '<object width="550" height="400" data="' + url + '" type="application/x-shockwave-flash">' +
-                              '<param name="movie" value="' + url + '">' +
-                              'Your browser does not support Flash content.' +
-                              '</object>';
+      
+      // Clear previous SWF content if any
+      document.getElementById("flashContent").innerHTML = "";
+      
+      // Configuration for the SWF object
+      var flashvars = {};
+      var params = {
+        quality: "high",
+        bgcolor: "#ffffff",
+        allowscriptaccess: "sameDomain",
+        allowfullscreen: "true"
+      };
+      var attributes = {
+        id: "myFlashContent",
+        name: "myFlashContent"
+      };
+      
+      // Embed the SWF file using SWFObject
+      var swfVersionStr = "10.0.0";
+      var expr = swfobject.embedSWF(url, "flashContent", "550", "400", swfVersionStr, null, flashvars, params, attributes, 
+        function(e) {
+          if (!e.success) {
+            errorDiv.innerHTML = "Flash content failed to load. Ensure that the URL is correct and that Flash is enabled in your browser.";
+          }
+        }
+      );
     }
   </script>
 </body>
