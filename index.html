@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SWF Player</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    #swfContainer {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Enter the SWF file URL</h1>
+  <input type="text" id="swfUrl" placeholder="Enter SWF file URL">
+  <button onclick="playSWF()">Play</button>
+
+  <div id="swfContainer"></div>
+
+  <script>
+    function playSWF() {
+      var url = document.getElementById("swfUrl").value.trim();
+      if (!url) {
+        alert("Please enter a SWF file URL.");
+        return;
+      }
+      var container = document.getElementById("swfContainer");
+      container.innerHTML = '<object width="550" height="400" data="' + url + '" type="application/x-shockwave-flash">' +
+                              '<param name="movie" value="' + url + '">' +
+                              'Your browser does not support Flash content.' +
+                              '</object>';
+    }
+  </script>
+</body>
+</html>
